@@ -5,6 +5,9 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <unordered_map>
+#include <utility>
+
 using namespace std;
 
 string exec(const char* cmd) {
@@ -42,8 +45,10 @@ int main(){
 
     string last_command;
     vector<string> tokens, results, list;
-    int len;    
+    int len;
 
+    unordered_map<string, int> freqs; 
+    vector< pair<int, string> > f;
 
     last_command = exec("bash -c \"sudo cat ~/.bash_history\" | awk -v n=2 '{x[NR%n]=$0}END{print x[(NR+1)%n]}'");
 
@@ -63,14 +68,35 @@ int main(){
             for(int j = 0; j < (len - 1); j++){
                 
                 list = split((exec(("bash -c \"compgen -ac | grep -o -w '\\w\\{" + to_string(len) + "\\}' | grep '" + tokens[i][j] + tokens[i][j+1] + "' | sort -u\"").c_str()).c_str()), '\n');
-                cout << "LIST SIZE: " << list.size() << endl;
+               
                 results.reserve(results.size() + distance(list.begin(), list.end()));
                 results.insert(results.end(), list.begin(), list.end());
                 
             }
         }
 
-        for(auto i: results) cout << "\"" << i << "\"" << " ";
+        for(string a:results){
+            
+            if(freqs.count(a) == 0 && a!=""){
+                freqs[a] = 1;
+            }
+
+            else{
+                freqs[a] += 1;
+            }
+        
+        }
+
+        for(auto k:freqs){
+
+            f.push_back(make_pair(k.second, k.first));
+        
+        }
+
+        sort(f.begin(), f.end());
+
+        for(auto h:f) cout << h.second << endl;
+
     }
 
 
