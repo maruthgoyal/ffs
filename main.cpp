@@ -83,8 +83,9 @@ int main(){
 
         for(string a:results){
             
-            if(freqs.count(a) == 0 && a!=""){
-                freqs[a] = 1;
+            if(freqs.count(a) == 0){
+                if(a!="")
+                    freqs[a] = 1;
             }
 
             else{
@@ -100,9 +101,15 @@ int main(){
         }
 
         sort(f.begin(), f.end());
+        reverse(f.begin(), f.end());
+        string choice = "";
 
-        for(auto h:f) cout << h.second << endl;
+        for(auto h:f){
 
+            printf("%s", h.second.c_str());
+            cin.ignore();
+            printf("%c[2k", 27);
+        }
     }
 
 
