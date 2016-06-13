@@ -7,9 +7,9 @@
 #include <algorithm>
 #include <unordered_map>
 #include <utility>
+#include <ncurses.h>
 
 using namespace std;
-
 
 /* Takes command to execute as input. Executes the command in the terminal and returns the output */
 string exec(const char* cmd) {
@@ -102,15 +102,49 @@ int main(){
 
         sort(f.begin(), f.end());
         reverse(f.begin(), f.end());
-        string choice = "";
 
-        for(auto h:f){
 
-            printf("%s", h.second.c_str());
-            cin.ignore();
-            printf("%c[2k", 27);
+
+        /**********************************************
+         * IT'S PRINTING TIME
+         *
+         ******************************************/
+
+        int ch, optionNo;
+
+        optionNo = 0;
+
+        initscr();
+        noecho();
+        keypad(stdscr, TRUE);
+        cbreak();
+
+        while(ch != 10 && ch != 3){
+
+            mvprintw(0,0,f[optionNo].second.c_str());
+            refresh();
+            ch = getch();
+
+            if(ch == KEY_DOWN){
+                if(optionNo < (f.size() -1))
+                    optionNo++;
+            }
+            
+            else if(ch == KEY_UP){
+                if(optionNo > 0)
+                    optionNo--;
+            }
+
         }
-    }
+
+        endwin();
+
+        if(ch == 10)
+            cout << exec(f[optionNo].second.c_str()) << endl;
+
+        else if(ch == 3){
+            cout << "BYE." << endl;
+        }
 
 
 
@@ -118,4 +152,4 @@ int main(){
     return 0;
 
 }
-
+}
